@@ -30,11 +30,11 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 //POST data to monogodb
 app.post('/users', async (req, res) => {
-  const { name, age } = req.body;
+  const { name, age, date } = req.body;
 
   try {
     // Create a new user using the data from the request body
-    const newUser = new User({ name, age });
+    const newUser = new User({ name, age, date });
     // Save the user to the database
     await newUser.save();
 
@@ -118,4 +118,5 @@ app.delete('/users/:id', async (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  // console.log('Express listening on port', this.address().port);
 });
