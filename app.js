@@ -1,10 +1,9 @@
-
-
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const User = require('./models/user'); // Import the User model
+require("dotenv").config()
 
 const app = express();
 
@@ -15,18 +14,20 @@ app.use(bodyParser.json());
 app.use(express.json());  // to parse JSON data in request bodies
 
 // MongoDB Connection URI (replace with your own URI or local instance)
-const mongoURI = 'mongodb+srv://acpacy21:2W9bIUmxKLltmf1m@cluster0.haecv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';  // Local MongoDB URI
+// const mongoURI = 'mongodb+srv://acpacy21:2W9bIUmxKLltmf1m@cluster0.haecv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';  // Local MongoDB URI
 // or for MongoDB Atlas
 // const mongoURI = 'your_mongodb_atlas_connection_string';
 
 // Connect to MongoDB using mongoose
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
+const connectDB = async (url) => {
+  debugger;
+  try {
+    mongoose.connect(url)
     console.log('Connected to MongoDB');
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error('MongoDB connection error:', err);
-  });
+  }
+}
 
 //POST data to monogodb
 app.post('/users', async (req, res) => {
@@ -114,9 +115,22 @@ app.delete('/users/:id', async (req, res) => {
 
 
 
-// Start the server
+// Start the server after connecting to the database
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  // console.log('Express listening on port', this.address().port);
-});
+const start = async () => {
+  try {
+    debugger;
+    await connectDB(process.env.MONGO_URI)
+    // console.log('Connected to MongoDB');
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+      // console.log('Express listening on port', this.address().port);
+    });
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+start()
+
